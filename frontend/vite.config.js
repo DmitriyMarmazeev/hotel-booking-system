@@ -3,8 +3,11 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [vue()],
-  base: '/hotel-booking-system',
+  base: './',
   build: {
     outDir: 'dist'
+  },
+  server: {
+    allowedHosts: true
   }
 })
