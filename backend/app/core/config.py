@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Database
-    DATABASE_URL: str = "postgresql://admin:password@database:5432/hotel_booking"
+    DATABASE_URL: str = os.getenv("DATABASE_URL")
     
     # JWT
     SECRET_KEY: str = "your-secret-key-change-in-production"

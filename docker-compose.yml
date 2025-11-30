@@ -4,7 +4,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://admin:password@database:5432/hotel_booking
+      - DATABASE_URL=postgresql://postgres:fgSZkbOCzXDprSfpoKSzsqxLTUgHnIRt@interchange.proxy.rlwy.net:18248/railway
     depends_on:
       - database
     networks:
