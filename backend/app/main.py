@@ -1,5 +1,7 @@
 from fastapi import FastAPI
+from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
+import urllib.parse
 
 from app.core.database import engine
 from app.shared.models import Base
@@ -16,11 +18,27 @@ from app.modules.bookings.routes import router as bookings_router  # Новый 
 # Создаем таблицы
 Base.metadata.create_all(bind=engine)
 
+class URLDecodeMiddleware:
+    def __init__(self, app):
+        self.app = app
+    
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http":
+            # Декодируем query parameters
+            query_string = scope.get("query_string", b"").decode()
+            if query_string:
+                decoded_query = urllib.parse.unquote(query_string)
+                scope["query_string"] = decoded_query.encode()
+        
+        await self.app(scope, receive, send)
+
 app = FastAPI(
     title="Hotel Booking System API",
     description="Система управления бронированием номеров в отелях",
     version="1.0.0"
 )
+
+app.add_middleware(URLDecodeMiddleware)
 
 # Настройка CORS
 app.add_middleware(
