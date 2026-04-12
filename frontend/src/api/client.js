@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost:8000' // Убедитесь, что это правильный URL вашего бэкенда
+const API_BASE_URL = 'https://hotel-booking-system-07d2.onrender.com' // Убедитесь, что это правильный URL вашего бэкенда
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
