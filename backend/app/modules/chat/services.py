@@ -21,7 +21,7 @@ class ChatService:
         # Инициализация LLM (Ollama)
         self.llm = ChatOllama(
             base_url=settings.OLLAMA_BASE_URL,
-            model="t-tech/T-lite-it-2.1",
+            model="myhotel-llm:q4_K_M",
             temperature=0.1,   # низкая температура для более детерминированных SQL
         )
 

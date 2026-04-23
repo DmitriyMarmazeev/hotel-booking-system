@@ -1,4 +1,6 @@
 docker-compose.yml
+postgres_data
 database
 frontend/node_modules
 .gitignore
+ollama_data

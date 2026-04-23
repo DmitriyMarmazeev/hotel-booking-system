@@ -34,7 +34,7 @@ async def lifespan(app: FastAPI):
             response = await client.post(
                 f"{settings.OLLAMA_BASE_URL}/api/generate",
                 json={
-                    "model": "t-tech/T-lite-it-2.1",
+                    "model": "myhotel-llm:q4_K_M",
                     "prompt": "Привет, повтори слово 'готов'.",
                     "stream": False,
                     "options": {"num_predict": 5}  # минимальное количество токенов
@@ -58,7 +58,8 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="Hotel Booking System API",
     description="Система управления бронированием номеров в отелях",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Настройка CORS
