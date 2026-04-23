@@ -14,6 +14,43 @@ from app.modules.auth.routes import router as auth_router
 from app.modules.users.routes import router as users_router
 from app.modules.hotels.routes import router as hotels_router
 from app.modules.bookings.routes import router as bookings_router
+from app.modules import chat
+
+from contextlib import asynccontextmanager
+import httpx
+import logging
+from app.core.config import settings
+
+logger = logging.getLogger(__name__)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Код, выполняемый при старте приложения
+    logger.info("Приложение запускается. Выполняем предзагрузку LLM модели...")
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            # Отправляем простой запрос к Ollama для загрузки модели в память
+            # Используем модель, указанную в настройках
+            response = await client.post(
+                f"{settings.OLLAMA_BASE_URL}/api/generate",
+                json={
+                    "model": "t-tech/T-lite-it-2.1",
+                    "prompt": "Привет, повтори слово 'готов'.",
+                    "stream": False,
+                    "options": {"num_predict": 5}  # минимальное количество токенов
+                }
+            )
+            if response.status_code == 200:
+                logger.info("✅ Модель LLM успешно предзагружена.")
+            else:
+                logger.warning(f"⚠️ Предзагрузка модели LLM: статус {response.status_code}")
+    except Exception as e:
+        logger.error(f"❌ Ошибка при предзагрузке модели: {e}")
+
+    yield  # Приложение работает
+
+    # Код, выполняемый при завершении (если нужно)
+    logger.info("Приложение завершает работу.")
 
 # Создаем таблицы
 Base.metadata.create_all(bind=engine)
@@ -68,6 +105,7 @@ app.include_router(auth_router, prefix="/api/auth", tags=["authentication"])
 app.include_router(users_router, prefix="/api/users", tags=["users"])
 app.include_router(hotels_router, prefix="/api/hotels", tags=["hotels"])
 app.include_router(bookings_router, prefix="/api/bookings", tags=["bookings"])
+app.include_router(chat.router, prefix="/api/chat", tags=["chat"])
 
 @app.get("/")
 async def root():

@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = os.getenv("DATABASE_URL")
+    OLLAMA_BASE_URL: str = "http://localhost:11434"
     
     # JWT
     SECRET_KEY: str = "your-secret-key-change-in-production"
